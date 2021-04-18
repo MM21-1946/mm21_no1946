@@ -1,0 +1,45 @@
+MODEL:
+  WEIGHT: ""
+  ARCHITECTURE: "FIAN"
+  FIAN:
+    VIDEOENCODER:
+      HIDDEN_DIM: 512
+      ATT_WIDTH: 3
+      NUM_HEADS: 4
+      DROPOUT: 0.2
+    QUERYENCODER:
+      HIDDEN_DIM: 512
+    MMENCODER:
+      HIDDEN_DIM: 512
+      TRANSFORMER:
+        FEEDFORWARD_DIM: 1024
+        NUM_HEADS: 4
+        DROPOUT: 0.2
+    LOSS:
+      TAU: 0.55
+      ALPHA: 0.005
+DATASETS:
+  TRAIN: ("charades_train_rp_verb_noun", )
+  TEST: ("charades_test", "charades_test_rp_verb_noun")
+  VISUAL_DIM: 1024
+  IN_MEMORY: False
+  PROPOSAL_METHOD: 'sliding_window'
+  WINDOW_WIDTHS: [16, 24, 32, 40]
+  WINDOW_OVERLAP: 0.875
+INPUT:
+  NUM_SEGMENTS: 64
+  UPSAMPLE: True
+  MAX_NUM_WORDS: 10
+  FIX_NUM_WORDS: True
+  PRE_QUERY_SIZE: 768
+  WORD2VEC: 'BERT'
+DATALOADER:
+  NUM_WORKERS: 8
+SOLVER:
+  LR: 0.0004
+  BATCH_SIZE: 64
+  SCHEDULER: ''
+  MAX_EPOCH: 15
+TEST:
+  NMS_THRESH: 0.5
+  BATCH_SIZE: 64

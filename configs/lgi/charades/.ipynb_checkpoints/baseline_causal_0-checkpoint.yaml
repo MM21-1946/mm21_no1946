@@ -1,0 +1,72 @@
+MODEL:
+  CUDNN: False
+  WEIGHT: ""
+  ARCHITECTURE: "LGI"
+  CAUSAL:
+    USE_CAUSALITY: True
+    TAU: 1.0
+    GAMMA: 0.03125
+    ALPHA: 0.0
+  LGI:
+    QUERYENCODER:
+      RNN:
+        TYPE: 'LSTM'
+        HIDDEN_SIZE: 512
+        NUM_LAYERS: 2
+        DROPOUT: 0.5
+        BIDIRECTIONAL: True
+      NUM_SEMANTIC_ENTITY: 3
+      SQAN_DROPOUT: 0.0
+    VIDEOENCODER:
+      HIDDEN_SIZE: 512
+      USE_POSITION: True
+    MMENCODER:
+      FUSION:
+        METHOD: 'mul'
+      LOCAL_CONTEXT:
+        METHOD: 'res_block'
+        RESBLOCK_KSIZE: 15
+        RESBLOCK_NUM: 1
+        DOWNSAMPLE: False
+      GLOBAL_CONTEXT:
+        METHOD: 'nl'
+        SATT_NUM: 1
+        SATT_USE_EMBEDDING: True
+        NL_NUM: 2
+        NL_HEADS_NUM: 4
+        NL_DROPOUT: 0.0
+        NL_USE_BIAS: True
+        NL_USE_LOCAL_MASK: False
+    PREDICTOR:
+      ATT_HDIM: 256
+      GROUNDING_HDIM: 512
+      LOGIC_HEAD: 'ReLU' # 'ReLU' used for charades in LGI code
+    LOSS:
+      USE_TAG_LOSS: True # temporal_attention_guidance_loss
+      TAG_WEIGHT: 1.0
+      USE_DQA_LOSS: True # distinct_query_attention_loss
+      DQA_WEIGHT: 1.0
+      DQA_LAMBDA: 0.3
+DATASETS:
+  TRAIN: ("charades_train",)
+  TEST: ("charades_test",)
+  VISUAL_DIM: 1024
+  IN_MEMORY: True
+  PROPOSAL_METHOD: 'standard'
+INPUT:
+  NUM_SEGMENTS: 128
+  UPSAMPLE: False
+  PRE_QUERY_SIZE: 300
+  WORD2VEC: 'GloVe'
+DATALOADER:
+  NUM_WORKERS: 16
+SOLVER:
+  OPTIMIZER: 'Adam'
+  LR: 0.0004
+  BATCH_SIZE: 128
+  SCHEDULER: ''
+  MAX_EPOCH: 500
+  CHECKPOINT_PERIOD: 25
+  TEST_PERIOD: 2
+TEST:
+  BATCH_SIZE: 128
